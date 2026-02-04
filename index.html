@@ -54,8 +54,6 @@
         max-width: 400px;
         width: 100%;
       }
-
-      /* Countdown Style */
       #timer {
         display: flex;
         justify-content: center;
@@ -76,7 +74,6 @@
         text-transform: uppercase;
         opacity: 0.7;
       }
-
       .pass-box h2 {
         font-family: "Dancing Script";
         font-size: 2.2rem;
@@ -106,7 +103,7 @@
         min-height: 20px;
       }
 
-      /* --- Other Styles (Same as yours) --- */
+      /* Animations & Elements */
       .floating-emoji {
         position: fixed;
         bottom: -50px;
@@ -233,6 +230,7 @@
         height: 100%;
         top: 0;
         left: 0;
+        transition: filter 1.5s;
       }
       .slide {
         position: absolute;
@@ -311,10 +309,16 @@
         transition: 0.4s;
         text-decoration: none;
         display: inline-block;
+        border: none;
+        outline: none;
       }
       .btn:hover {
         transform: scale(1.05);
         background: #ff758c;
+      }
+      .btn a {
+        color: white;
+        text-decoration: none;
       }
 
       #next-step-ui {
@@ -327,9 +331,18 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        z-index: 20;
-        background: rgba(0, 0, 0, 0.8);
+        z-index: 100;
+        background: rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(8px);
+        animation: fadeIn 1.5s forwards;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
     </style>
   </head>
@@ -415,6 +428,22 @@
           class="slide"
           style="background-image: url(&quot;img/img4.jpg&quot;)"
         ></div>
+        <div
+          class="slide"
+          style="background-image: url(&quot;img/img5.jpg&quot;)"
+        ></div>
+        <div
+          class="slide"
+          style="background-image: url(&quot;img/img6.jpg&quot;)"
+        ></div>
+        <div
+          class="slide"
+          style="background-image: url(&quot;img/img7.jpg&quot;)"
+        ></div>
+        <div
+          class="slide"
+          style="background-image: url(&quot;img/img8.jpg&quot;)"
+        ></div>
       </div>
 
       <div class="ui-box">
@@ -431,11 +460,12 @@
             font-family: &quot;Dancing Script&quot;;
             font-size: 3rem;
             color: white;
+            margin-bottom: 20px;
           "
         >
           To be continued...
         </h2>
-        <a href="msg.html" class="btn" style="margin-top: 20px">Next Page →</a>
+        <button class="btn"><a href="msg.html">Next Page →</a></button>
       </div>
 
       <audio id="loveAudio" loop>
@@ -444,13 +474,12 @@
     </div>
 
     <script>
-      // COUNTDOWN LOGIC
+      // February 14th Date Lock
       const targetDate = new Date("Feb 3, 2026 00:00:00").getTime();
 
       const timerInterval = setInterval(() => {
         const now = new Date().getTime();
         const diff = targetDate - now;
-
         if (diff <= 0) {
           clearInterval(timerInterval);
           document.getElementById("timer").innerHTML =
@@ -488,7 +517,6 @@
           error.innerText = "Wait until February 14th! 🌹";
           return;
         }
-
         if (input === "sanu1234") {
           document.getElementById("password-overlay").style.display = "none";
           startLoaderFlow();
@@ -530,21 +558,38 @@
         setInterval(createHeart, 400);
       }
 
+      // නිවැරදි කළ Slideshow සහ Next Page logic එක
       function startExperience() {
         document.getElementById("start-btn").style.display = "none";
         document
           .getElementById("loveAudio")
           .play()
           .catch((e) => console.log("Blocked"));
+
         let slides = document.querySelectorAll(".slide");
         let current = 0;
-        setInterval(() => {
+        let slideCount = 0;
+
+        let slideInterval = setInterval(() => {
           slides[current].classList.remove("active");
-          current = (current + 1) % slides.length;
-          slides[current].classList.add("active");
+          current++;
+
+          if (current < slides.length) {
+            slides[current].classList.add("active");
+          } else {
+            // පින්තූර 4ම පෙන්නලා ඉවර වුණාම
+            clearInterval(slideInterval);
+            showNextPage();
+          }
         }, 4500);
+      }
+
+      function showNextPage() {
+        const nextUI = document.getElementById("next-step-ui");
+        nextUI.style.display = "flex";
+        document.getElementById("slideshow-wrap").style.filter = "blur(8px)";
+        document.querySelector(".ui-box").style.display = "none";
       }
     </script>
   </body>
 </html>
-
