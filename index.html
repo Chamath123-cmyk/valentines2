@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Our Love Story ❤️</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --accent: #ff4d6d;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        font-family: "Poppins", sans-serif;
+        overflow: hidden;
+      }
+
+      /* --- 0. Password & Countdown Overlay --- */
+      #password-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, #1a0a0d 0%, #000 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 20000;
+        color: white;
+        text-align: center;
+        padding: 20px;
+      }
+      .pass-box {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 40px;
+        border-radius: 30px;
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 77, 109, 0.2);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        max-width: 400px;
+        width: 100%;
+      }
+
+      /* Countdown Style */
+      #timer {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+      .time-unit {
+        display: flex;
+        flex-direction: column;
+      }
+      .time-unit span:first-child {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--accent);
+      }
+      .time-unit span:last-child {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        opacity: 0.7;
+      }
+
+      .pass-box h2 {
+        font-family: "Dancing Script";
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+      }
+      .pass-box input {
+        padding: 15px;
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        text-align: center;
+        font-size: 1rem;
+        margin-bottom: 20px;
+        width: 100%;
+        outline: none;
+        transition: 0.3s;
+      }
+      .pass-box input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 10px rgba(255, 77, 109, 0.3);
+      }
+      .pass-error {
+        color: var(--accent);
+        font-size: 0.85rem;
+        margin-bottom: 15px;
+        min-height: 20px;
+      }
+
+      /* --- Other Styles (Same as yours) --- */
+      .floating-emoji {
+        position: fixed;
+        bottom: -50px;
+        z-index: 3;
+        pointer-events: none;
+        animation: floatUp linear forwards;
+      }
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0) scale(0);
+          opacity: 0;
+        }
+        20% {
+          opacity: 1;
+          transform: translateY(-10vh) scale(1.2);
+        }
+        100% {
+          transform: translateY(-110vh) scale(0.8);
+          opacity: 0;
+        }
+      }
+
+      #loader {
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        background: #000;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+      }
+      .heart-box {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        filter: drop-shadow(0 0 20px var(--accent));
+      }
+      .heart-shape {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: var(--accent);
+        transform: rotate(-45deg);
+        animation: heartbeat 1.2s infinite;
+      }
+      .heart-shape::before,
+      .heart-shape::after {
+        content: "";
+        width: 80px;
+        height: 80px;
+        background: var(--accent);
+        border-radius: 50%;
+        position: absolute;
+      }
+      .heart-shape::before {
+        top: -40px;
+        left: 0;
+      }
+      .heart-shape::after {
+        left: 40px;
+        top: 0;
+      }
+      @keyframes heartbeat {
+        0%,
+        100% {
+          transform: rotate(-45deg) scale(0.8);
+        }
+        30% {
+          transform: rotate(-45deg) scale(1.1);
+        }
+      }
+
+      #second-loader {
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        background: #000;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      .reveal-text {
+        font-family: "Dancing Script";
+        font-size: 2.2rem;
+        color: #fff;
+        animation: fadeInOut 3.5s forwards;
+        text-align: center;
+      }
+      @keyframes fadeInOut {
+        0%,
+        100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      #question-step {
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        background: #000;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9998;
+        color: white;
+      }
+
+      #main-content {
+        display: none;
+        height: 100vh;
+        position: relative;
+        width: 100%;
+      }
+      .photo-wrap {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+      }
+      .slide {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1.5s;
+        background-size: cover;
+        background-position: center;
+      }
+      .slide.active {
+        opacity: 1;
+      }
+      .overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1;
+      }
+
+      .ui-box {
+        position: relative;
+        z-index: 10;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+      }
+      h1 {
+        font-family: "Dancing Script";
+        font-size: 3.5rem;
+        margin: 0;
+        opacity: 0;
+        animation: textReveal 1.5s forwards;
+      }
+      @keyframes textReveal {
+        0% {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .sub-text {
+        font-size: 1.1rem;
+        margin: 10px 0 30px 0;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 0;
+        animation: typing 3s steps(40) forwards;
+        animation-delay: 1.5s;
+      }
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      .btn {
+        background: var(--accent);
+        border: none;
+        padding: 15px 40px;
+        color: #fff;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.4s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn:hover {
+        transform: scale(1.05);
+        background: #ff758c;
+      }
+
+      #next-step-ui {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 20;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(8px);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="password-overlay">
+      <div class="pass-box">
+        <div id="timer">
+          <div class="time-unit">
+            <span id="days">00</span><span>Days</span>
+          </div>
+          <div class="time-unit">
+            <span id="hours">00</span><span>Hours</span>
+          </div>
+          <div class="time-unit">
+            <span id="mins">00</span><span>Mins</span>
+          </div>
+          <div class="time-unit">
+            <span id="secs">00</span><span>Secs</span>
+          </div>
+        </div>
+        <h2>Unlock Your Surprise ❤️</h2>
+        <p id="error-msg" class="pass-error"></p>
+        <input
+          type="password"
+          id="pass-input"
+          placeholder="Enter Password..."
+          onkeypress="handleEnter(event)"
+        />
+        <button class="btn" style="width: 100%" onclick="checkPassword()">
+          Unlock
+        </button>
+      </div>
+    </div>
+
+    <div id="loader">
+      <div class="heart-box"><div class="heart-shape"></div></div>
+      <p
+        style="
+          color: #fff;
+          margin-top: 60px;
+          letter-spacing: 3px;
+          font-size: 0.7rem;
+          opacity: 0.7;
+        "
+      >
+        PREPARING YOUR SURPRISE...
+      </p>
+    </div>
+
+    <div id="second-loader">
+      <h2 class="reveal-text">Every heartbeat belongs to you... ❤️</h2>
+    </div>
+
+    <div id="question-step">
+      <h2
+        style="
+          font-family: &quot;Dancing Script&quot;;
+          font-size: 2.5rem;
+          margin-bottom: 25px;
+        "
+      >
+        Ready to see our beautiful story? ❤️
+      </h2>
+      <button class="btn" onclick="sayYes()">Yes, Show Me!</button>
+    </div>
+
+    <div id="main-content">
+      <div class="overlay"></div>
+      <div class="photo-wrap" id="slideshow-wrap">
+        <div
+          class="slide active"
+          style="background-image: url(&quot;img/img1.jpg&quot;)"
+        ></div>
+        <div
+          class="slide"
+          style="background-image: url(&quot;img/img2.jpg&quot;)"
+        ></div>
+        <div
+          class="slide"
+          style="background-image: url(&quot;img/img3.jpg&quot;)"
+        ></div>
+        <div
+          class="slide"
+          style="background-image: url(&quot;img/img4.jpg&quot;)"
+        ></div>
+      </div>
+
+      <div class="ui-box">
+        <h1>Happy Valentine's Day sanuuu! <br />🥹❤️</h1>
+        <p class="sub-text">Every moment with you is a beautiful dream.</p>
+        <button class="btn" id="start-btn" onclick="startExperience()">
+          Open Your Surprise
+        </button>
+      </div>
+
+      <div id="next-step-ui">
+        <h2
+          style="
+            font-family: &quot;Dancing Script&quot;;
+            font-size: 3rem;
+            color: white;
+          "
+        >
+          To be continued...
+        </h2>
+        <a href="msg.html" class="btn" style="margin-top: 20px">Next Page →</a>
+      </div>
+
+      <audio id="loveAudio" loop>
+        <source src="YOUR_MUSIC_LINK_HERE" type="audio/mpeg" />
+      </audio>
+    </div>
+
+    <script>
+      // COUNTDOWN LOGIC
+      const targetDate = new Date("Feb 14, 2026 00:00:00").getTime();
+
+      const timerInterval = setInterval(() => {
+        const now = new Date().getTime();
+        const diff = targetDate - now;
+
+        if (diff <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById("timer").innerHTML =
+            "<h3 style='color:var(--accent)'>Happy Valentine's Day! 🌹</h3>";
+        } else {
+          document.getElementById("days").innerText = Math.floor(
+            diff / (1000 * 60 * 60 * 24),
+          )
+            .toString()
+            .padStart(2, "0");
+          document.getElementById("hours").innerText = Math.floor(
+            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+          )
+            .toString()
+            .padStart(2, "0");
+          document.getElementById("mins").innerText = Math.floor(
+            (diff % (1000 * 60 * 60)) / (1000 * 60),
+          )
+            .toString()
+            .padStart(2, "0");
+          document.getElementById("secs").innerText = Math.floor(
+            (diff % (1000 * 60)) / 1000,
+          )
+            .toString()
+            .padStart(2, "0");
+        }
+      }, 1000);
+
+      function checkPassword() {
+        const input = document.getElementById("pass-input").value;
+        const error = document.getElementById("error-msg");
+        const now = new Date().getTime();
+
+        if (now < targetDate) {
+          error.innerText = "Wait until February 14th! 🌹";
+          return;
+        }
+
+        if (input === "sanu1234") {
+          document.getElementById("password-overlay").style.display = "none";
+          startLoaderFlow();
+        } else {
+          error.innerText = "Incorrect Password! Try again.";
+        }
+      }
+
+      function handleEnter(e) {
+        if (e.key === "Enter") checkPassword();
+      }
+
+      function startLoaderFlow() {
+        const loader = document.getElementById("loader");
+        loader.style.display = "flex";
+        setTimeout(() => {
+          loader.style.display = "none";
+          document.getElementById("second-loader").style.display = "flex";
+          setTimeout(() => {
+            document.getElementById("second-loader").style.display = "none";
+            document.getElementById("question-step").style.display = "flex";
+          }, 3500);
+        }, 3000);
+      }
+
+      function createHeart() {
+        const heart = document.createElement("div");
+        heart.classList.add("floating-emoji");
+        heart.innerText = "❤️";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = Math.random() * 3 + 4 + "s";
+        document.getElementById("main-content").appendChild(heart);
+        setTimeout(() => heart.remove(), 7000);
+      }
+
+      function sayYes() {
+        document.getElementById("question-step").style.display = "none";
+        document.getElementById("main-content").style.display = "block";
+        setInterval(createHeart, 400);
+      }
+
+      function startExperience() {
+        document.getElementById("start-btn").style.display = "none";
+        document
+          .getElementById("loveAudio")
+          .play()
+          .catch((e) => console.log("Blocked"));
+        let slides = document.querySelectorAll(".slide");
+        let current = 0;
+        setInterval(() => {
+          slides[current].classList.remove("active");
+          current = (current + 1) % slides.length;
+          slides[current].classList.add("active");
+        }, 4500);
+      }
+    </script>
+  </body>
+</html>
