@@ -545,7 +545,7 @@
       function createHeart() {
         const heart = document.createElement("div");
         heart.classList.add("floating-emoji");
-        heart.innerText = "❤️";
+        heart.innerText = ["❤️", "💗"];
         heart.style.left = Math.random() * 100 + "vw";
         heart.style.animationDuration = Math.random() * 3 + 4 + "s";
         document.getElementById("main-content").appendChild(heart);
