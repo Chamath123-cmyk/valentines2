@@ -393,7 +393,10 @@
     </div>
 
     <div id="second-loader">
-      <h2 class="reveal-text">Every heartbeat belongs to you... ❤️</h2>
+      <h2 class="reveal-text">
+        Every heartbeat belongs to you... <br />
+        ❤️
+      </h2>
     </div>
 
     <div id="question-step">
@@ -402,9 +405,10 @@
           font-family: &quot;Dancing Script&quot;;
           font-size: 2.5rem;
           margin-bottom: 25px;
+          text-align: center;
         "
       >
-        Ready to see our beautiful story? ❤️
+        Ready to see our beautiful story? <br />
       </h2>
       <button class="btn" onclick="sayYes()">Yes, Show Me!</button>
     </div>
@@ -414,6 +418,10 @@
       <div class="photo-wrap" id="slideshow-wrap">
         <div
           class="slide active"
+          style="background-image: url(&quot;img/img8.jpg&quot;)"
+        ></div>
+        <div
+          class="slide"
           style="background-image: url(&quot;img/img1.jpg&quot;)"
         ></div>
         <div
@@ -450,7 +458,7 @@
         <h1>Happy Valentine's Day sanuuu! <br />🥹❤️</h1>
         <p class="sub-text">Every moment with you is a beautiful dream.</p>
         <button class="btn" id="start-btn" onclick="startExperience()">
-          Open Your Surprise
+          continue?...
         </button>
       </div>
 
@@ -469,7 +477,7 @@
       </div>
 
       <audio id="loveAudio" loop>
-        <source src="YOUR_MUSIC_LINK_HERE" type="audio/mpeg" />
+        <source src="audio.mp3" type="audio/mpeg" />
       </audio>
     </div>
 
@@ -544,8 +552,9 @@
 
       function createHeart() {
         const heart = document.createElement("div");
+        const emojis = ["❤️", "💗"];
         heart.classList.add("floating-emoji");
-        heart.innerText = ["❤️", "💗"];
+        heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
         heart.style.left = Math.random() * 100 + "vw";
         heart.style.animationDuration = Math.random() * 3 + 4 + "s";
         document.getElementById("main-content").appendChild(heart);
