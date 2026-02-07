@@ -3,11 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Our Love Story ❤️</title>
+    <title>Happy valentine❤️</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
       :root {
@@ -27,7 +28,6 @@
         overflow: hidden;
       }
 
-      /* --- 0. Password & Countdown Overlay --- */
       #password-overlay {
         position: fixed;
         top: 0;
@@ -74,6 +74,7 @@
         text-transform: uppercase;
         opacity: 0.7;
       }
+
       .pass-box h2 {
         font-family: "Dancing Script";
         font-size: 2.2rem;
@@ -92,10 +93,6 @@
         outline: none;
         transition: 0.3s;
       }
-      .pass-box input:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 10px rgba(255, 77, 109, 0.3);
-      }
       .pass-error {
         color: var(--accent);
         font-size: 0.85rem;
@@ -103,7 +100,6 @@
         min-height: 20px;
       }
 
-      /* Animations & Elements */
       .floating-emoji {
         position: fixed;
         bottom: -50px;
@@ -126,17 +122,23 @@
         }
       }
 
+      #loader,
+      #second-loader,
+      #question-step,
+      #main-content {
+        display: none;
+      }
       #loader {
         position: fixed;
         width: 100%;
         height: 100vh;
         background: #000;
-        display: none;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         z-index: 10000;
       }
+
       .heart-box {
         position: relative;
         width: 80px;
@@ -178,16 +180,6 @@
         }
       }
 
-      #second-loader {
-        position: fixed;
-        width: 100%;
-        height: 100vh;
-        background: #000;
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-      }
       .reveal-text {
         font-family: "Dancing Script";
         font-size: 2.2rem;
@@ -205,25 +197,21 @@
         }
       }
 
-      #question-step {
-        position: fixed;
-        width: 100%;
-        height: 100vh;
-        background: #000;
-        display: none;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 9998;
-        color: white;
+      .btn {
+        background: var(--accent);
+        border: none;
+        padding: 15px 40px;
+        color: #fff;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.4s;
+      }
+      .btn:hover {
+        transform: scale(1.05);
+        background: #ff758c;
       }
 
-      #main-content {
-        display: none;
-        height: 100vh;
-        position: relative;
-        width: 100%;
-      }
       .photo-wrap {
         position: absolute;
         width: 100%;
@@ -280,46 +268,6 @@
           opacity: 1;
         }
       }
-      .sub-text {
-        font-size: 1.1rem;
-        margin: 10px 0 30px 0;
-        overflow: hidden;
-        white-space: nowrap;
-        width: 0;
-        animation: typing 3s steps(40) forwards;
-        animation-delay: 1.5s;
-      }
-      @keyframes typing {
-        from {
-          width: 0;
-        }
-        to {
-          width: 100%;
-        }
-      }
-
-      .btn {
-        background: var(--accent);
-        border: none;
-        padding: 15px 40px;
-        color: #fff;
-        border-radius: 50px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.4s;
-        text-decoration: none;
-        display: inline-block;
-        border: none;
-        outline: none;
-      }
-      .btn:hover {
-        transform: scale(1.05);
-        background: #ff758c;
-      }
-      .btn a {
-        color: white;
-        text-decoration: none;
-      }
 
       #next-step-ui {
         position: absolute;
@@ -327,26 +275,24 @@
         left: 0;
         width: 100%;
         height: 100%;
-        display: none;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         z-index: 100;
         background: rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(8px);
-        animation: fadeIn 1.5s forwards;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
+        display: none;
       }
     </style>
   </head>
   <body>
+    <audio id="magicSound">
+      <source
+        src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+
     <div id="password-overlay">
       <div class="pass-box">
         <div id="timer">
@@ -392,23 +338,42 @@
       </p>
     </div>
 
-    <div id="second-loader">
+    <div
+      id="second-loader"
+      style="
+        display: none;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        background: #000;
+      "
+    >
       <h2 class="reveal-text">
         Every heartbeat belongs to you... <br />
         ❤️
       </h2>
     </div>
 
-    <div id="question-step">
+    <div
+      id="question-step"
+      style="
+        display: none;
+        height: 100vh;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #000;
+        color: white;
+      "
+    >
       <h2
         style="
           font-family: &quot;Dancing Script&quot;;
           font-size: 2.5rem;
-          margin-bottom: 25px;
           text-align: center;
         "
       >
-        Ready to see our beautiful story? <br />
+        Ready to see our beautiful story?
       </h2>
       <button class="btn" onclick="sayYes()">Yes, Show Me!</button>
     </div>
@@ -432,66 +397,50 @@
           class="slide"
           style="background-image: url(&quot;img/img3.jpg&quot;)"
         ></div>
-        <div
-          class="slide"
-          style="background-image: url(&quot;img/img4.jpg&quot;)"
-        ></div>
-        <div
-          class="slide"
-          style="background-image: url(&quot;img/img5.jpg&quot;)"
-        ></div>
-        <div
-          class="slide"
-          style="background-image: url(&quot;img/img6.jpg&quot;)"
-        ></div>
-        <div
-          class="slide"
-          style="background-image: url(&quot;img/img7.jpg&quot;)"
-        ></div>
-        <div
-          class="slide"
-          style="background-image: url(&quot;img/img8.jpg&quot;)"
-        ></div>
       </div>
-
       <div class="ui-box">
-        <h1>Happy Valentine's Day sanuuu! <br />🥹❤️</h1>
-        <p class="sub-text">Every moment with you is a beautiful dream.</p>
+        <h1 style="margin-top: 200px">
+          Happy Valentine's Day sanuuu! <br />🥹❤️
+        </h1>
         <button class="btn" id="start-btn" onclick="startExperience()">
           continue?...
         </button>
       </div>
-
       <div id="next-step-ui">
         <h2
           style="
             font-family: &quot;Dancing Script&quot;;
             font-size: 3rem;
             color: white;
-            margin-bottom: 20px;
           "
         >
           To be continued...
         </h2>
-        <button class="btn"><a href="msg.html">Next Page →</a></button>
+        <button class="btn" onclick="location.href = 'msg.html'">
+          Next Page →
+        </button>
       </div>
-
       <audio id="loveAudio" loop>
         <source src="audio.mp3" type="audio/mpeg" />
       </audio>
     </div>
 
     <script>
-      // February 14th Date Lock
-      const targetDate = new Date("Feb 3, 2026 00:00:00").getTime();
+      const targetDate = new Date("Feb 1, 2026 00:00:00").getTime();
+      let hasRunSurprise = false;
 
       const timerInterval = setInterval(() => {
         const now = new Date().getTime();
         const diff = targetDate - now;
+
         if (diff <= 0) {
           clearInterval(timerInterval);
           document.getElementById("timer").innerHTML =
-            "<h3 style='color:var(--accent)'>Happy Valentine's Day! 🌹</h3>";
+            "<h2 style='color:var(--accent); font-family: \"Dancing Script\";'>Happy Valentine's Day! 🌹</h2>";
+          if (!hasRunSurprise) {
+            triggerSurprise();
+            hasRunSurprise = true;
+          }
         } else {
           document.getElementById("days").innerText = Math.floor(
             diff / (1000 * 60 * 60 * 24),
@@ -516,40 +465,81 @@
         }
       }, 1000);
 
+      function triggerSurprise() {
+        // Play Sound
+        const audio = document.getElementById("magicSound");
+        audio.play().catch(() => {});
+
+        // Confetti Heart Rain
+        const duration = 5 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = {
+          startVelocity: 30,
+          spread: 360,
+          ticks: 60,
+          zIndex: 21000,
+        };
+
+        function randomInRange(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
+        const interval = setInterval(function () {
+          const timeLeft = animationEnd - Date.now();
+          if (timeLeft <= 0) return clearInterval(interval);
+
+          const particleCount = 50 * (timeLeft / duration);
+          confetti(
+            Object.assign({}, defaults, {
+              particleCount,
+              origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+              shapes: ["heart"],
+              colors: ["#ff4d6d", "#ff758c", "#ffffff"],
+            }),
+          );
+          confetti(
+            Object.assign({}, defaults, {
+              particleCount,
+              origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+              shapes: ["heart"],
+              colors: ["#ff4d6d", "#ff758c", "#ffffff"],
+            }),
+          );
+        }, 250);
+      }
+
       function checkPassword() {
         const input = document.getElementById("pass-input").value;
-        const error = document.getElementById("error-msg");
-        const now = new Date().getTime();
-
-        if (now < targetDate) {
-          error.innerText = "Wait until February 14th! 🌹";
+        if (new Date().getTime() < targetDate) {
+          document.getElementById("error-msg").innerText =
+            "Wait until February 14th! 🌹";
           return;
         }
         if (input === "sanu1234") {
           document.getElementById("password-overlay").style.display = "none";
-          startLoaderFlow();
+          document.getElementById("loader").style.display = "flex";
+          setTimeout(() => {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("second-loader").style.display = "flex";
+            setTimeout(() => {
+              document.getElementById("second-loader").style.display = "none";
+              document.getElementById("question-step").style.display = "flex";
+            }, 3500);
+          }, 3000);
         } else {
-          error.innerText = "Incorrect Password! Try again.";
+          document.getElementById("error-msg").innerText =
+            "Incorrect Password!";
         }
       }
 
       function handleEnter(e) {
         if (e.key === "Enter") checkPassword();
       }
-
-      function startLoaderFlow() {
-        const loader = document.getElementById("loader");
-        loader.style.display = "flex";
-        setTimeout(() => {
-          loader.style.display = "none";
-          document.getElementById("second-loader").style.display = "flex";
-          setTimeout(() => {
-            document.getElementById("second-loader").style.display = "none";
-            document.getElementById("question-step").style.display = "flex";
-          }, 3500);
-        }, 3000);
+      function sayYes() {
+        document.getElementById("question-step").style.display = "none";
+        document.getElementById("main-content").style.display = "block";
+        setInterval(createHeart, 400);
       }
-
       function createHeart() {
         const heart = document.createElement("div");
         const emojis = ["❤️", "💗"];
@@ -560,44 +550,22 @@
         document.getElementById("main-content").appendChild(heart);
         setTimeout(() => heart.remove(), 7000);
       }
-
-      function sayYes() {
-        document.getElementById("question-step").style.display = "none";
-        document.getElementById("main-content").style.display = "block";
-        setInterval(createHeart, 400);
-      }
-
-      // නිවැරදි කළ Slideshow සහ Next Page logic එක
       function startExperience() {
         document.getElementById("start-btn").style.display = "none";
-        document
-          .getElementById("loveAudio")
-          .play()
-          .catch((e) => console.log("Blocked"));
-
+        document.getElementById("loveAudio").play();
         let slides = document.querySelectorAll(".slide");
         let current = 0;
-        let slideCount = 0;
-
-        let slideInterval = setInterval(() => {
+        setInterval(() => {
           slides[current].classList.remove("active");
-          current++;
-
-          if (current < slides.length) {
-            slides[current].classList.add("active");
-          } else {
-            // පින්තූර 4ම පෙන්නලා ඉවර වුණාම
-            clearInterval(slideInterval);
-            showNextPage();
-          }
+          current = (current + 1) % slides.length;
+          slides[current].classList.add("active");
+          if (current === slides.length - 1)
+            setTimeout(() => {
+              document.getElementById("next-step-ui").style.display = "flex";
+              document.getElementById("slideshow-wrap").style.filter =
+                "blur(8px)";
+            }, 4000);
         }, 4500);
-      }
-
-      function showNextPage() {
-        const nextUI = document.getElementById("next-step-ui");
-        nextUI.style.display = "flex";
-        document.getElementById("slideshow-wrap").style.filter = "blur(8px)";
-        document.querySelector(".ui-box").style.display = "none";
       }
     </script>
   </body>
